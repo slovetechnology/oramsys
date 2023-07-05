@@ -81,8 +81,8 @@ const DetailsTransaction = ({ hendelNext, onHide, show, transactionType, signalC
         pricingCounterParty: "",
     })
 
-    const [borrower_Applicant, setBorrower_Applicant] = useState({})
-    const [lenders, setLenders] = useState({})
+    const [borrower_Applicant, setBorrower_Applicant] = useState("")
+    const [lenders, setLenders] = useState("")
 
     const [addWarehouseModal, setAddWarehouseModal] = useState(false)
     const [addInsuranceModal, setAddInsuranceModal] = useState(false)
@@ -1028,6 +1028,7 @@ const DetailsTransaction = ({ hendelNext, onHide, show, transactionType, signalC
         // signalCounterParty(body.details.pricingDetails)
         signalLender(body.lenders)
         hendelNext()
+        console.log(body, 'from japan')
     }
 
     const handleCommoditySubtypeChange = (e, newVal) => {
@@ -1065,12 +1066,13 @@ const DetailsTransaction = ({ hendelNext, onHide, show, transactionType, signalC
                     <div className='add-edit-product'>
                         <div className='form'>
                             <Row>
-                            <Col lg={6}>
+                                <Col lg={6}>
                                     <Autocomplete
                                         label='Borrower/Applicant'
                                         id='disable-clearable'
-                                        onChange={(e, newVal) =>
-                                            setBorrower_Applicant(newVal)
+                                        onChange={(e, newVal) => {
+                                            setBorrower_Applicant(newVal.label)
+                                        }
                                         }
                                         getOptionLabel={(option) => option.label || ""}
                                         options={borrowerOption}
@@ -1090,7 +1092,7 @@ const DetailsTransaction = ({ hendelNext, onHide, show, transactionType, signalC
                                             borrower_Applicant &&
                                             borrowerOption.find(
                                                 (ele) =>
-                                                    ele.value ===
+                                                    ele.label ===
                                                     borrower_Applicant
                                             )
                                         }
@@ -1112,8 +1114,9 @@ const DetailsTransaction = ({ hendelNext, onHide, show, transactionType, signalC
                                     <Autocomplete
                                         label='Lender'
                                         id='disable-clearable'
-                                        onChange={(e, newVal) =>
-                                            setLenders(newVal)
+                                        onChange={(e, newVal) => {
+                                            setLenders(newVal.label)
+                                        }
                                         }
                                         getOptionLabel={(option) => option.label || ""}
                                         options={lenderOption}
@@ -1133,7 +1136,7 @@ const DetailsTransaction = ({ hendelNext, onHide, show, transactionType, signalC
                                             lenders &&
                                             lenderOption.find(
                                                 (ele) =>
-                                                    ele.value ===
+                                                    ele.label ===
                                                     lenders
                                             )
                                         }
