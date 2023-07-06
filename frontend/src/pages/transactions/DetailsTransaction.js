@@ -385,7 +385,7 @@ const DetailsTransaction = ({ hendelNext, onHide, show, transactionType, signalC
                 .then((getTransactionByIdData) => {
                     let resp = getTransactionByIdData.data;
                     let respProductDetails = getTransactionByIdData.data.details.productDetails;
-                    console.log('CHECK ALL DATA', getTransactionByIdData.data.details.shippingOptions)
+                    console.log('CHECK ALL DATA', getTransactionByIdData.data)
 
                     if (getTransactionByIdData && getTransactionByIdData.data) {
                         setEditId(getTransactionByIdData.data?.details?._id)
@@ -1070,9 +1070,8 @@ const DetailsTransaction = ({ hendelNext, onHide, show, transactionType, signalC
                                     <Autocomplete
                                         label='Borrower/Applicant'
                                         id='disable-clearable'
-                                        onChange={(e, newVal) => {
-                                            setBorrower_Applicant(newVal.label)
-                                        }
+                                        onChange={(e, newVal) =>
+                                            setBorrower_Applicant(newVal)
                                         }
                                         getOptionLabel={(option) => option.label || ""}
                                         options={borrowerOption}
@@ -1114,9 +1113,8 @@ const DetailsTransaction = ({ hendelNext, onHide, show, transactionType, signalC
                                     <Autocomplete
                                         label='Lender'
                                         id='disable-clearable'
-                                        onChange={(e, newVal) => {
-                                            setLenders(newVal.label)
-                                        }
+                                        onChange={(e, newVal) =>
+                                            setLenders(newVal)
                                         }
                                         getOptionLabel={(option) => option.label || ""}
                                         options={lenderOption}

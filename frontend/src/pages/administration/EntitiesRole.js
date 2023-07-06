@@ -120,16 +120,16 @@ const EntitiesRole = () => {
                         ]}
                         data={entityRole?.data}
                         actions={[
-                            // {
-                            //     icon: 'edit',
-                            //     tooltip: 'Edit Users',
-                            //     onClick: (e,rowData) => {setAddEntityModal(true); setRowData(rowData) }
-                            // },
-                            // {
-                            //     icon: 'preview',
-                            //     tooltip: 'View Users',
-                            //     // onClick: () => setEditModal(true)
-                            // }
+                            {
+                                icon: 'edit',
+                                tooltip: 'Edit Users',
+                                onClick: (e,rowData) => {setAddEntityModal(true); setRowData(rowData) }
+                            },
+                            {
+                                icon: 'preview',
+                                tooltip: 'View Users',
+                                // onClick: () => setEditModal(true)
+                            }
                         ]}
                         options={{
                             filtering: true,

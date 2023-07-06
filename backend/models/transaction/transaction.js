@@ -6,8 +6,8 @@ var Schema = mongoose.Schema
 var Schema = new Schema({
     type: { type: String, required: true },
     userId: { type: String, required: true, default: null },
-    lenders: { type: Schema.Types.ObjectId, ref: 'Entity', require: false, default: null },
-    borrower_Applicant: { type: Schema.Types.ObjectId, ref: 'Entity', require: false, default: null },
+    lenders: { type: String, required: false, default: null },
+    borrower_Applicant: { type: String, required: false, default: null },
     termSheet: { type: String, required: true, default: "Not Signed" },
     termSheetURL: { type: String, required: false, default: null },
     details: { type: Schema.Types.ObjectId, ref: "TransactionDetails", required: false, default: null },
