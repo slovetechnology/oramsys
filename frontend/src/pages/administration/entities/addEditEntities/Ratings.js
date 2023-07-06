@@ -31,7 +31,7 @@ const Ratings = ({ hendelNext, hendelCancel }) => {
 
     useEffect(() => {
         console.log(companyData, 'getting rate out')
-        if (companyData && companyData.ratings.length > 0 && agencyData?.data) {
+        if (companyData && companyData.ratings && agencyData?.data) {
             setRating(companyData.ratings.map((ele) => {
                 return {
                     agency: agencyData.data.find((item) => item._id === ele.agency)?.name,
@@ -40,6 +40,9 @@ const Ratings = ({ hendelNext, hendelCancel }) => {
                     expiryDate: ele.expiryDate,
                 }
             }))
+            setRate({
+                rateRequired: companyData.isRating
+            })
         }
     }, [companyData, agencyData])
 
@@ -65,11 +68,12 @@ const Ratings = ({ hendelNext, hendelCancel }) => {
                             label='Rating required?'
                             id='disable-clearable'
                             onChange={(e, newVal) => {
-                                console.log(newVal, 'on booking')
                                 setRate({
                                     ...rate,
                                     rateRequired: newVal.label,
                                 })
+                                const body = {...companyData, isRating: newVal.label}
+                                dispatch(companydataAction(body))
                             }
                             }
                             getOptionLabel={(option) => option.label || ""}

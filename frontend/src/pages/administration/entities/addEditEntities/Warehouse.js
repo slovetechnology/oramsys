@@ -37,6 +37,9 @@ const Warehouse = ({ hendelNext, hendelCancel }) => {
                     governingLaw: ele.governingLaw,
                 }
             }))
+            setLicence({
+                warehouseRequired: companyData.isWarehouse
+            })
         }
     }, [companyData, countryData])
 
@@ -69,6 +72,8 @@ const Warehouse = ({ hendelNext, hendelCancel }) => {
                                             ...licence,
                                             warehouseRequired: newVal.label,
                                         })
+                                        const body = {...companyData, isWarehouse: newVal.label}
+                                        dispatch(companydataAction(body))
                                     }
                                     }
                                     getOptionLabel={(option) => option.label || ""}

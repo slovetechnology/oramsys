@@ -27,7 +27,7 @@ const Licences = ({ hendelNext, hendelCancel }) => {
     const countryData = useSelector((state) => state.countryData.country)
 
     useEffect(() => {
-        if (companyData && companyData.licenses.length > 0 && countryData?.data) {
+        if (companyData && companyData.licenses && countryData?.data) {
             setLicenceTable(companyData.licenses.map((ele) => {
                 return {
                     type: ele.type,
@@ -38,12 +38,16 @@ const Licences = ({ hendelNext, hendelCancel }) => {
                     expirydate: moment(ele.expiryDate).format("YYYY-MM-DD"),
                 }
             }))
-            setLicence(companyData.licenses.map((ele) => {
-                return {
-                    warehouseRequired: ele.warehouseRequired
-                }
-            }))
+            // setLicence(companyData.licenses.map((ele) => {
+            //     return {
+            //         warehouseRequired: ele.warehouseRequired
+            //     }
+            // }))
+            setLicence({
+                warehouseRequired: companyData.isLicence
+            })
         }
+        // eslint-disable-next-line
     }, [companyData, countryData])
 
     let warehouseRequiredOptions = [
@@ -67,13 +71,15 @@ const Licences = ({ hendelNext, hendelCancel }) => {
                         <Row className='mt-4'>
                             <Col lg={6}>
                                 <Autocomplete
-                                    label='Warehouse required?'
+                                    label='License required?'
                                     id='disable-clearable'
                                     onChange={(e, newVal) => {
                                         setLicence({
                                             ...licence,
                                             warehouseRequired: newVal.label,
                                         })
+                                        const body = {...companyData, isLicence: newVal.label}
+                                        dispatch(companydataAction(body))
                                     }
                                     }
                                     getOptionLabel={(option) => option.label || ""}
@@ -82,7 +88,7 @@ const Licences = ({ hendelNext, hendelCancel }) => {
                                     renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            label='Warehouse Required?'
+                                            label='License Required?'
                                             variant='standard'
                                         />
                                     )}

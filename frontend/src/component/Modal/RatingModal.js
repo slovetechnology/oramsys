@@ -98,7 +98,7 @@ const RatingModal = ({ onHide, show, mode, editData }) => {
         }
         const body = {
             ...companyData,
-            ratings: companyData.ratings ? [...companyData.rating, rating] : [rating]
+            ratings: companyData.ratings ? [...companyData.ratings, rating] : [rating]
         }
         dispatch(companydataAction(body))
         onHide()

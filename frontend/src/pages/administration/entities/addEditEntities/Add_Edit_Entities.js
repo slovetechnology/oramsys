@@ -145,6 +145,9 @@ const Add_Edit_Entities = () => {
                 ratings: ratingData,
                 warehouses: warehouseData,
                 roles: roleData,
+                isLicence: "No",
+                isRating: "No",
+                isWarehouse: "No"
             }
             dispatch(companydataAction(companydata))
         }
