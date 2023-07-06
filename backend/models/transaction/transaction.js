@@ -57,6 +57,7 @@ Schema.statics.getAll = async function () {
                             path: "portOfOrigin",
                             select: ['name']
                         },
+                       
                         {
                             path: "warehouses",
                             populate: [
@@ -74,6 +75,17 @@ Schema.statics.getAll = async function () {
                                 },
                             ]
                         },
+                        {
+                        path: "shippingOptions",
+                        populate: {
+                            path: "shippingCompany",
+                            select: ['details'],
+                            populate: {
+                                path: 'details',
+                                select: ['name']
+                            }
+                        },
+                    },
                     ],
                 },
                 {
@@ -332,6 +344,17 @@ Schema.statics.getAllBySearch = async function (search) {
                     },
                 },
                 {
+                    path: "shippingOptions",
+                    populate: {
+                        path: "shippingCompany",
+                        select: ['details'],
+                        populate: {
+                            path: 'details',
+                            select: ['name']
+                        }
+                    },
+                },
+                {
                     path: "pricingDetails",
                     populate: {
                         path: "pricingCounterParty",
@@ -585,6 +608,17 @@ Schema.statics.getById = async function (id) {
                     populate: {
                         path: "country",
                         select: ['name']
+                    },
+                },
+                {
+                    path: "shippingOptions",
+                    populate: {
+                        path: "shippingCompany",
+                        select: ['details'],
+                        populate: {
+                            path: 'details',
+                            select: ['name']
+                        }
                     },
                 },
                 {
@@ -848,6 +882,17 @@ Schema.statics.getByUserId = async function (userId) {
                     },
                 },
                 {
+                    path: "shippingOptions",
+                    populate: {
+                        path: "shippingCompany",
+                        select: ['details'],
+                        populate: {
+                            path: 'details',
+                            select: ['name']
+                        }
+                    },
+                },
+                {
                     path: "pricingDetails",
                     populate: {
                         path: "pricingCounterParty",
@@ -1102,6 +1147,7 @@ Schema.statics.getTransactionsFromArrayOfIds = async function (ids) {
                             path: "airbaseOfOrigin",
                             select: ['name']
                         },
+                    
                         {
                             path: "warehouses",
                             populate: [
@@ -1126,6 +1172,17 @@ Schema.statics.getTransactionsFromArrayOfIds = async function (ids) {
                     populate: {
                         path: "country",
                         select: ['name']
+                    },
+                },
+                {
+                    path: "shippingOptions",
+                    populate: {
+                        path: "shippingCompany",
+                        select: ['details'],
+                        populate: {
+                            path: 'details',
+                            select: ['name']
+                        }
                     },
                 },
                 {

@@ -25,13 +25,16 @@ const Edit_Transactions = () => {
     const dispatch = useDispatch()
     const queryParams = new URLSearchParams(location.search)
     const id = queryParams.get("id")
-    const transactionType = location?.state[0]?.type
+    const transactionType = location?.state[0]?.type    
     const productNature = location?.state[1]?.type
     const isView = location?.state[2]?.isView
     const [getTrans, setGetTrans] = useState({})
     const [transId, setTransId] = useState("");
     const [getLender, setGetLender] = useState("")
     const [getBorrower, setGetBorrower] = useState("")
+    const [getWarehouseCompany, setGetWarehouseCompany] = useState("")
+    const [getCounterParty, setGetCounterParty] = useState("")
+    const [getShippingCompany, setGetShippingCompany] = useState("")
 
     const [activeStep, setActiveStep] = useState(0);
     let step = []
@@ -61,6 +64,16 @@ const Edit_Transactions = () => {
     }
     const signalBorrower = (values) => {
         setGetBorrower(values)
+    }
+    
+    const signalWarehouseCompany = (values) => {
+        setGetWarehouseCompany(values)
+    }
+    const signalCounterParty = (values) => {
+       return setGetCounterParty(values)
+    }
+    const signalShippingCompany = (values) => {
+        return setGetShippingCompany(values)
     }
 
     const handleNext = () => {
@@ -115,8 +128,8 @@ const Edit_Transactions = () => {
                                     {
                                         productNature === 'Physical' ?
                                             <>
-                                                {activeStep + 1 === 1 && <DetailsTransaction hendelNext={handleNext} signalContract={signalContract} signalLender={signalLender} signalBorrower={signalBorrower} transactionType={transactionType} transaction_id={transId} />}
-                                                {activeStep + 1 === 2 && <KeyParties hendelNext={handleNext} getLender={getLender} getBorrower={getBorrower} hendelCancel={handleBack} transactionType={transactionType} />}
+                                                {activeStep + 1 === 1 && <DetailsTransaction hendelNext={handleNext} signalShippingCompany={signalShippingCompany} signalCounterParty={signalCounterParty} signalContract={signalContract} signalWarehouseCompany={signalWarehouseCompany} signalLender={signalLender} signalBorrower={signalBorrower} transactionType={transactionType} transaction_id={transId} />}
+                                                {activeStep + 1 === 2 && <KeyParties hendelNext={handleNext} getShippingCompany={getShippingCompany} getCounterParty={getCounterParty} getLender={getLender} getBorrower={getBorrower} getWarehouseCompany={getWarehouseCompany} hendelCancel={handleBack} transactionType={transactionType} />}
                                                 {activeStep + 1 === 3 && <DocumentFlow hendelNext={handleNext} hendelCancel={handleBack} />}
                                                 {activeStep + 1 === 4 && <FundFlow hendelNext={handleNext} getTrans={getTrans} hendelCancel={handleBack} />}
                                                 {activeStep + 1 === 5 && <Facility hendelNext={handleNext} hendelCancel={handleBack} />}

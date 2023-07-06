@@ -12,9 +12,10 @@ import { transactionDataAction } from '../../redux/actions/transactionDataAction
 import { MdOutlineDeleteOutline } from 'react-icons/md'
 import { entityGetAction } from '../../redux/actions/entityAction'
 
-const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty, getWarehouseCompany,  getLender, getBorrower }) => {
+const KeyParties = ({ hendelCancel, hendelNext, transactionType, getShippingCompany, getCounterParty, getWarehouseCompany, getLender, getBorrower }) => {
     console.log(getWarehouseCompany)
     console.log(getCounterParty)
+    console.log(getShippingCompany)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [showEditModal, setShowEditModal] = useState(false)
@@ -28,6 +29,7 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
     const [lenders, setLenders] = useState("")
     const [warehouseComp, setWarehouseComp] = useState("")
     const [counterPart, setCounterPart] = useState("")
+    const [shippingComp, setShippingComp] = useState("")
     const [error, setError] = useState({})
     const [names, setNames] = useState([])
     const [buyers, setBuyer] = useState([])
@@ -92,7 +94,7 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
             setTableData(getTransactionByIdData.data.keyParties[0].parties.map((ele) => {
                 console.log(ele);
                 return {
-                    name: { label: (ele.name?.details?.name != null ? ele.name?.details?.name:ele.name?.details?.givenName) , value: ele.name?._id },
+                    name: { label: (ele.name?.details?.name != null ? ele.name?.details?.name : ele.name?.details?.givenName), value: ele.name?._id },
                     type: { label: ele.type?.roleName, value: ele.type?._id }
                 }
             }))
@@ -101,30 +103,35 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
             setBorrower_Applicant(getLender.borrower_Applicant)
             setLenders(getBorrower.lenders)
             setWarehouseComp(getWarehouseCompany?.warehouses[0]?.warehouseCompany?.label)
-            setCounterPart(getCounterParty?.pricingCounterParty?.details?.name)
+            setCounterPart(getTransactionByIdData.data?.details?.pricingDetails
+                ?.pricingCounterParty?.details.name)
+            setShippingComp(getTransactionByIdData.data?.details?.shippingOptions
+                ?.shippingCompany?.details.name)
+            // setCounterPart(getCounterParty?.pricingCounterParty?.details?.name)
+            // setShippingComp(getShippingCompany?.shippingCompany?.details?.name)
             // console.log('check warehouse', getTransactionByIdData.details.shippingOptions?.warehouses[0]?.warehouseCompany?.details.name)
             if (getTransactionByIdData.data?.keyParties[0].relatedParties != undefined && getTransactionByIdData.data?.keyParties[0].relatedParties.length > 0) {
                 // console.log('keyparties at useEffect', keyParties);
-                setkeyParties(getTransactionByIdData.data?.keyParties[0].relatedParties);                
-                
-                console.log('relatedparties from database',getTransactionByIdData.data?.keyParties[0].relatedParties);
+                setkeyParties(getTransactionByIdData.data?.keyParties[0].relatedParties);
+
+                console.log('relatedparties from database', getTransactionByIdData.data?.keyParties[0].relatedParties);
                 setEditMode(true);
             }
             console.log('CUNTERPARTY', getCounterParty?.pricingCounterParty?.details?.name)
         }
     }, [getTransactionByIdData])
 
-    useEffect(() => { 
+    useEffect(() => {
         if (getTransactionByIdData.data?.keyParties[0].relatedParties != undefined && getTransactionByIdData.data?.keyParties[0].relatedParties.length > 0) {
             console.log('RELATEDPARTIES FROM API', relatedPartyDetails);
             setRelatedPartyDetails(getTransactionByIdData.data?.keyParties[0].relatedParties);
-        }    
+        }
         // alert('getTransactionByIdData');
-    }, [getTransactionByIdData]) 
-    
-    useEffect(() => { 
+    }, [getTransactionByIdData])
+
+    useEffect(() => {
         console.log('RELATEDPARTIES useeffect 2', relatedPartyDetails);
-    },[relatedPartyDetails])
+    }, [relatedPartyDetails])
 
     let temp = keyParties;
     const handleRelation = (e, newValue, ind) => {
@@ -134,13 +141,13 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
         temp[ind].party_relation = newValue.value;
         console.log('handleRelation temp ----->', temp);
         setkeyParties(temp);
-        
+
     }
 
     const handleParties = (e, newValue, ind, type) => {
         let temp = keyParties;
         let tempRelatedPartyDetails = relatedPartyDetails;
-        if (temp[ind] == undefined) { 
+        if (temp[ind] == undefined) {
             temp = [...keyParties, {
                 'party_relation': '', 'buyer': '', 'shipper': '', 'upload_evidence': ''
             }];
@@ -155,35 +162,35 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
                     temp[ind].buyer = temp_name;
                     tempRelatedPartyDetails[ind].buyer = temp_name;
                 }
-            } else { 
+            } else {
                 alert('Party 1 and Party 2 should not be identical');
             }
-        } else { 
+        } else {
             if (temp[ind].buyer !== temp_name) {
                 temp[ind].shipper = temp_name;
                 tempRelatedPartyDetails[ind].shipper = temp_name;
 
-            } else { 
+            } else {
                 alert('Party 1 and Party 2 should not be identical');
             }
-        }      
-        console.log('handleParties temp',temp);
+        }
+        console.log('handleParties temp', temp);
         // setParty({ ...party, name: { value: newValue._id, label: temp_name } })
         setRelatedPartyDetails([...relatedPartyDetails]);
         setkeyParties(temp)
     }
 
-    
+
 
     useEffect(() => {
         if (nameOption?.data) {
             // console.log(nameOption?.data);
             var temp_names = [];
-            nameOption?.data.forEach((element,index) => { 
+            nameOption?.data.forEach((element, index) => {
                 element.details.name = element.details?.name != null ? element.details?.name : element.details?.givenName;
                 temp_names.push(element)
             });
-            console.log("GET RELATED PARTIES DATA-----",temp_names);
+            console.log("GET RELATED PARTIES DATA-----", temp_names);
             setNames(temp_names)
         }
     }, [nameOption])
@@ -234,7 +241,7 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
         //     return
         // }
         let relatedParties = keyParties;
-        
+
         let body = {
             ...transactionData,
             keyParties: {
@@ -257,12 +264,12 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
         let buyer_arr = [];
         let warehouses = [];
         if (names) {
-            names.forEach(element => { 
+            names.forEach(element => {
                 element.roles.forEach(roleDetail => {
                     if (roleDetail.roleId?.roleName == "Buyer") {
                         var temp = {
-                            label: element.details.name != null ? element.details.name:element.details.givenName,
-                            value: element.details.name != null ?element.details.name:element.details.givenName,
+                            label: element.details.name != null ? element.details.name : element.details.givenName,
+                            value: element.details.name != null ? element.details.name : element.details.givenName,
                             prefix: ''
                         };
                         buyer_arr.push(temp);
@@ -278,7 +285,7 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
         setWarehouses(warehouses);
     }, [names])
 
-    
+
 
     const handleBuyer = (e, newValue, ind) => {
         let temp = keyParties;
@@ -310,7 +317,7 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
             });
             console.log('handleChangeFile keyparties', keyParties);
         }
-        
+
     }
 
     const buyer_data_loop = [0];
@@ -322,77 +329,97 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
                     <h5 className="title-color">Parties</h5>
                     <button className={`add_btn me-3 ${isView ? 'd-none' : 'd-block'}`} onClick={() => { setShowEditModal(!showEditModal) }}> <img src='../../assets/img/about/plus.png' className='me-2' />Add</button>
                 </div>
+                <Row>
+                    <Col lg={12} className="mb-4">
+                        <TextField
+                            label='Borrower/Applicant Name'
+                            variant='standard'
+                            color='warning'
+                            name='borrower_Applicant'
+
+                            // onChange={(e) => setBorrower_Applicant(e.target.value)}
+                            value={getBorrower}
+                            disabled={true}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col lg={12} className="mb-4">
+                        <TextField
+                            label='Lenders'
+                            variant='standard'
+                            color='warning'
+                            name='lenders'
+
+                            // onChange={(e) => setLenders(e.target.value)}
+                            value={getLender}
+                            disabled={true}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col lg={12} className="mb-4">
+                        <TextField
+                            label='Shipping Company'
+                            variant='standard'
+                            color='warning'
+                            name='lenders'
+
+                            // onChange={(e) => setLenders(e.target.value)}
+                            value={shippingComp}
+                            disabled={true}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col lg={12} className="mb-4">
+                        <TextField
+                            label='Warehouse Company'
+                            variant='standard'
+                            color='warning'
+                            name='warehouse company'
+
+                            // onChange={(e) => setBorrower_Applicant(e.target.value)}
+                            value={warehouseComp}
+                            disabled={true}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col lg={12} className="mb-4">
+                        <TextField
+                            label='Hedging Counterparty'
+                            variant='standard'
+                            color='warning'
+                            name='Counterparty'
+
+                            // onChange={(e) => setBorrower_Applicant(e.target.value)}
+                            value={counterPart}
+                            disabled={true}
+                        />
+                    </Col>
+                </Row>
+
+
                 <MaterialTable
                     title=""
                     columns={[
-                        {
-                            title: 'Warehouse Company', render: rowData =>
-                                <Row>
-                                    <Col lg={12} className="mb-4">
-                                        <TextField
-                                            label=''
-                                            variant='standard'
-                                            color='warning'
-                                            name='warehouse company'
+                        // {
+                        //     title: 'Warehouse Company', render: rowData =>
 
-                                            // onChange={(e) => setBorrower_Applicant(e.target.value)}
-                                            value={warehouseComp}
-                                            disabled={true}
-                                        />
-                                    </Col>
-                                </Row>
-                        },
+                        // },
                         // {
                         //     title: 'Counterparty', render: rowData =>
-                        //         <Row>
-                        //             <Col lg={12} className="mb-4">
-                        //                 <TextField
-                        //                     label=''
-                        //                     variant='standard'
-                        //                     color='warning'
-                        //                     name='Counterparty'
 
-                        //                     // onChange={(e) => setBorrower_Applicant(e.target.value)}
-                        //                     value={counterPart}
-                        //                     disabled={true}
-                        //                 />
-                        //             </Col>
-                        //         </Row>
                         // },
-                        {
-                            title: 'Borrower/Applicant', render: rowData =>
-                                <Row>
-                                    <Col lg={12} className="mb-4">
-                                        <TextField
-                                            label='Borrower/Applicant Name'
-                                            variant='standard'
-                                            color='warning'
-                                            name='borrower_Applicant'
+                        // {
+                        //     title: 'Borrower/Applicant', render: rowData =>
 
-                                            // onChange={(e) => setBorrower_Applicant(e.target.value)}
-                                            value={getBorrower}
-                                            disabled={true}
-                                        />
-                                    </Col>
-                                </Row>
-                        },
-                        {
-                            title: 'Lender', render: rowData =>
-                                <Row>
-                                    <Col lg={12} className="mb-4">
-                                        <TextField
-                                            label='Lenders'
-                                            variant='standard'
-                                            color='warning'
-                                            name='lenders'
+                        // },
+                        // {
+                        //     title: 'Lender', render: rowData =>
 
-                                            // onChange={(e) => setLenders(e.target.value)}
-                                            value={getLender}
-                                            disabled={true}
-                                        />
-                                    </Col>
-                                </Row>
-                        },
+                        // },
                         { title: 'Party', field: 'name.label' },
                         { title: 'Role', field: 'type.label' },
 
@@ -436,13 +463,13 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
                             onClick={handleRelatedParties}>
                             <img src='../../assets/img/about/plus.png' className='me-2' />Add Party Relation</button>
                     </div>
-                    
-                        <>
-                            {apiFetched && relatedPartyDetails?.map((party, index) => (
-                                <Row key={index}>
-                                    <>
 
-                                        {/* <Col lg={3}>
+                    <>
+                        {apiFetched && relatedPartyDetails?.map((party, index) => (
+                            <Row key={index}>
+                                <>
+
+                                    {/* <Col lg={3}>
                                             <div className='d-flex ms-4'>
                                                 <img src='../../../assets/img/about/Tag.png' style={{ "height": "30px", "top": "22px", "position": "relative" }} />
                                                 <Autocomplete
@@ -461,55 +488,55 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
                                                 />
                                             </div>
                                         </Col> */}
-                                        <Col lg={3}>
-                                            <Autocomplete
-                                                options={names}
-                                                getOptionLabel={(option) => (option.details?.name)}
-                                                id={"disable-clearable-buyer-" + index}
-                                                label="Party"
-                                                renderInput={(params) => (
-                                                    <TextField {...params} label="Party 1" variant="standard" />
-                                                )}
-                                                onChange={(event, newValue) => {
-                                                    console.log('test1');
-                                                    // names.forEach((ele) => { 
-                                                    //     console.log(ele.details.name);
-                                                    //     console.log('hurre',party.buyer==ele.details.name);
-                                                        console.log(party.buyer);
-                                                    // })
-                                                    // console.log(names.find((ele) => ele.details.name == party.buyer))
-                                                   
-                                                    handleParties(event, newValue,index,'buyer');
-                                                }}
-                                                disabled={isView}
-                                                value={names.find((ele) => ele.details.name === party.buyer)}
-                                                disableClearable
-                                            />
-                                             {error && error?.buyer && <span style={{ color: 'red' }}>{error?.buyer}</span>}
-                                        </Col>
+                                    <Col lg={3}>
+                                        <Autocomplete
+                                            options={names}
+                                            getOptionLabel={(option) => (option.details?.name)}
+                                            id={"disable-clearable-buyer-" + index}
+                                            label="Party"
+                                            renderInput={(params) => (
+                                                <TextField {...params} label="Party 1" variant="standard" />
+                                            )}
+                                            onChange={(event, newValue) => {
+                                                console.log('test1');
+                                                // names.forEach((ele) => { 
+                                                //     console.log(ele.details.name);
+                                                //     console.log('hurre',party.buyer==ele.details.name);
+                                                console.log(party.buyer);
+                                                // })
+                                                // console.log(names.find((ele) => ele.details.name == party.buyer))
 
-                                        <Col lg={3}>
-                                            <Autocomplete
-                                                options={names}
-                                                getOptionLabel={(option) => ( option.details?.name)}
-                                                id={"disable-clearable-shipper-" + index}
-                                                label="Party"
-                                                renderInput={(params) => (
-                                                    <TextField {...params} label="Party 2" variant="standard" />
-                                                )}
-                                                onChange={(event, newValue) => {
-                                                    handleParties(event, newValue, index,'shipper');
-                                                }}
-                                                disabled={isView}
-                                                value={(names && party.shipper) && names.find((ele) => ele.details.name === party.shipper)}
-                                                disableClearable
-                                            />
-                                             {error && error?.shipper && <span style={{ color: 'red' }}>{error?.shipper}</span>}
-                                        </Col>
+                                                handleParties(event, newValue, index, 'buyer');
+                                            }}
+                                            disabled={isView}
+                                            value={names.find((ele) => ele.details.name === party.buyer)}
+                                            disableClearable
+                                        />
+                                        {error && error?.buyer && <span style={{ color: 'red' }}>{error?.buyer}</span>}
+                                    </Col>
 
-                                        {/* {warehouses.map((element) => ( */}
+                                    <Col lg={3}>
+                                        <Autocomplete
+                                            options={names}
+                                            getOptionLabel={(option) => (option.details?.name)}
+                                            id={"disable-clearable-shipper-" + index}
+                                            label="Party"
+                                            renderInput={(params) => (
+                                                <TextField {...params} label="Party 2" variant="standard" />
+                                            )}
+                                            onChange={(event, newValue) => {
+                                                handleParties(event, newValue, index, 'shipper');
+                                            }}
+                                            disabled={isView}
+                                            value={(names && party.shipper) && names.find((ele) => ele.details.name === party.shipper)}
+                                            disableClearable
+                                        />
+                                        {error && error?.shipper && <span style={{ color: 'red' }}>{error?.shipper}</span>}
+                                    </Col>
 
-                                        {/* <Col lg={3}>
+                                    {/* {warehouses.map((element) => ( */}
+
+                                    {/* <Col lg={3}>
                                             <><div className='d-flex'>
                                                 <img src='../../../assets/img/about/Deliver.png' style={{ "height": "30px", "top": "22px", "position": "relative" }} />
                                                 <Autocomplete
@@ -530,64 +557,64 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
                                                         
 
                                         </Col> */}
-                                        <Col lg={4}>
-                                            <div className='d-flex align-items-center Related_parties'>
-                                                <p className='mb-0 title-color'>Relation</p>
-                                                <Autocomplete
-                                                    className='ms-3 mb-3'
-                                                    options={[...parties]}
-                                                    getOptionLabel={(option) => option.label}
-                                                    id={"disable-clearable-relation-party-" + party.party_relation}
-                                                    label="Party Relation"
-                                                    renderInput={(params) => (
-                                                        <TextField {...params} label="Party Relation " variant="standard" />
-                                                    )}
-                                                    defaultValue={relatedPartyDetails.party_relation}
-                                                    getOptionSelected={(option) => option.label === 'test'}
-                                                    onChange={(event, newValue) => { handleRelation(event, newValue, index); setRelation(parties); console.log('parties', parties);console.log('party', party); }}
-                                                    value={parties.find((ele) => ele.value == party.party_relation)}
-                                                    disableClearable
-                                                />
-                                            </div>
-                                            {error && error?.party_relation && <span style={{ color: 'red' }}>{error?.party_relation}</span>}
-                                        </Col>
-                                        {relation && <Col lg={2}>
-                                            <div className='drag-and-drop'>
-                                                <DropzoneArea
-                                                    Icon="none"
-                                                    filesLimit={1}
-                                                    showPreviews={true}
-                                                    // defaultValue={relatedPartyDetails.upload_evidence}
-                                                    showPreviewsInDropzone={false}
-                                                    useChipsForPreview
-                                                    previewGridProps={{ container: { spacing: 1, } }}
-                                                    dropzoneText='Upload Evidence'
-                                                    dropzoneProps={ 
-                                                        {  disabled: false} 
-                                                    }
-                                                    previewText=""
-                                                    onChange={(file) => handleChangeFile(file[0], index)}
-                                                    disabled={party.buyer === '' || party.shipper === '' || party.party_relation === '' }
-                                                />
-                                            </div>
-                                            {error && error?.upload_evidence && <span style={{ color: 'red' }}>{error?.upload_evidence}</span>}
-                                        </Col>}
+                                    <Col lg={4}>
+                                        <div className='d-flex align-items-center Related_parties'>
+                                            <p className='mb-0 title-color'>Relation</p>
+                                            <Autocomplete
+                                                className='ms-3 mb-3'
+                                                options={[...parties]}
+                                                getOptionLabel={(option) => option.label}
+                                                id={"disable-clearable-relation-party-" + party.party_relation}
+                                                label="Party Relation"
+                                                renderInput={(params) => (
+                                                    <TextField {...params} label="Party Relation " variant="standard" />
+                                                )}
+                                                defaultValue={relatedPartyDetails.party_relation}
+                                                getOptionSelected={(option) => option.label === 'test'}
+                                                onChange={(event, newValue) => { handleRelation(event, newValue, index); setRelation(parties); console.log('parties', parties); console.log('party', party); }}
+                                                value={parties.find((ele) => ele.value == party.party_relation)}
+                                                disableClearable
+                                            />
+                                        </div>
+                                        {error && error?.party_relation && <span style={{ color: 'red' }}>{error?.party_relation}</span>}
+                                    </Col>
+                                    {relation && <Col lg={2}>
+                                        <div className='drag-and-drop'>
+                                            <DropzoneArea
+                                                Icon="none"
+                                                filesLimit={1}
+                                                showPreviews={true}
+                                                // defaultValue={relatedPartyDetails.upload_evidence}
+                                                showPreviewsInDropzone={false}
+                                                useChipsForPreview
+                                                previewGridProps={{ container: { spacing: 1, } }}
+                                                dropzoneText='Upload Evidence'
+                                                dropzoneProps={
+                                                    { disabled: false }
+                                                }
+                                                previewText=""
+                                                onChange={(file) => handleChangeFile(file[0], index)}
+                                                disabled={party.buyer === '' || party.shipper === '' || party.party_relation === ''}
+                                            />
+                                        </div>
+                                        {error && error?.upload_evidence && <span style={{ color: 'red' }}>{error?.upload_evidence}</span>}
+                                    </Col>}
 
-                                        {/* <Col lg={2}>
+                                    {/* <Col lg={2}>
                                         <div className=''>
                                     <MdOutlineDeleteOutline onClick={() => handleRemoveParty(index)} className='cursor-pointer' size={30} />
                                     </div> 
                                         </Col> */}
 
-                                    </>
-                                    {/* <div className='d-flex justify-content-end '>
+                                </>
+                                {/* <div className='d-flex justify-content-end '>
                                     <MdOutlineDeleteOutline className='mb-5' size={30} />
                                     </div> */}
-                                </Row>
-                            ))}
-                        </>
+                            </Row>
+                        ))}
+                    </>
 
-                  
+
 
 
                 </div>
