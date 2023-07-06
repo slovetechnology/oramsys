@@ -253,7 +253,7 @@ const DetailsTransaction = ({ hendelNext, onHide, show, transactionType, signalC
 
             entityData.data.map((ele) => {
                 ele.roles.map(roleDetail => {
-                    if (roleDetail.roleId.roleName == "Hedge Counterparty") {
+                    if (roleDetail.roleId?.roleName == "Hedge Counterparty") {
                         var temp = {
                             label: ele?.details?.name,
                             value: ele._id
@@ -278,7 +278,7 @@ const DetailsTransaction = ({ hendelNext, onHide, show, transactionType, signalC
 
             entityData.data.map((ele) => {
                 ele.roles.map(roleDetail => {
-                    if (roleDetail.roleId.roleName == "Shipping Company") {
+                    if (roleDetail.roleId?.roleName == "Shipping Company") {
                         var temp = {
                             label: ele?.details?.name,
                             value: ele._id
@@ -303,7 +303,7 @@ const DetailsTransaction = ({ hendelNext, onHide, show, transactionType, signalC
 
             entityData.data.map((ele) => {
                 ele.roles.map(roleDetail => {
-                    if (roleDetail.roleId.roleName == "Buyer" || roleDetail.roleId.roleName == "Seller") {
+                    if (roleDetail.roleId?.roleName == "Buyer" || roleDetail.roleId?.roleName == "Seller") {
                         var temp1 = {
                             label: ele?.details?.name,
                             value: ele._id
@@ -328,7 +328,7 @@ const DetailsTransaction = ({ hendelNext, onHide, show, transactionType, signalC
 
             entityData.data.map((ele) => {
                 ele.roles.map(roleDetail => {
-                    if (roleDetail.roleId.roleName == "Bank") {
+                    if (roleDetail.roleId?.roleName == "Bank") {
                         var temp = {
                             label: ele?.details?.name,
                             value: ele._id

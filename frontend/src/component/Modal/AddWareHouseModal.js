@@ -32,7 +32,7 @@ const AddWareHouseModal = ({ onHide, show, wareHouseData, wareHouseId }) => {
 
             entityData.data.map((ele) => {
                 ele.roles.map(roleDetail => {
-                    if (roleDetail.roleId.roleName == "Warehouse Company") {
+                    if (roleDetail.roleId?.roleName == "Warehouse Company") {
                         var temp = {
                             label: ele?.details?.name,
                             value: ele._id

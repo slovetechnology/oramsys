@@ -20,14 +20,14 @@ const Licences = ({ hendelNext, hendelCancel }) => {
     const location = useLocation()
     const isView = location.state[1]?.isView
     const [licence, setLicence] = useState({
-        warehouseRequired: ''
+        warehouseRequired: 'No'
     })
 
     const companyData = useSelector((state) => state.companydata.companydata)
     const countryData = useSelector((state) => state.countryData.country)
 
     useEffect(() => {
-        if (companyData && companyData.licenses && countryData?.data) {
+        if (companyData && companyData.licenses.length > 0 && countryData?.data) {
             setLicenceTable(companyData.licenses.map((ele) => {
                 return {
                     type: ele.type,
@@ -47,9 +47,8 @@ const Licences = ({ hendelNext, hendelCancel }) => {
     }, [companyData, countryData])
 
     let warehouseRequiredOptions = [
-        { value: '', label: "Select option" },
-        { value: true, label: "Yes" },
         { value: false, label: "No" },
+        { value: true, label: "Yes" },
     ]
 
     const Delete = (data) => {
@@ -66,7 +65,6 @@ const Licences = ({ hendelNext, hendelCancel }) => {
                 <div className='product'>
                     <div>
                         <Row className='mt-4'>
-
                             <Col lg={6}>
                                 <Autocomplete
                                     label='Warehouse required?'
@@ -91,80 +89,65 @@ const Licences = ({ hendelNext, hendelCancel }) => {
                                     disabled={isView}
                                     value={
                                         ((warehouseRequiredOptions.length > 0 &&
-                                            licence.warehouseRequired === 'Yes') ||
-                                            licence.warehouseRequired === 'No') ?
+                                            licence.warehouseRequired === 'Yes') || licence.warehouseRequired === 'No') ?
                                             warehouseRequiredOptions.find(
                                                 (ele) => ele.label === licence.warehouseRequired
-                                            ) : warehouseRequiredOptions = ''
+                                            ) : licence.warehouseRequired = ''
                                     }
                                 />
-                                {/* {error?.warehouseRequired && (
-                                            <span
-                                                style={{
-                                                    color: "#da251e",
-                                                    width: "100%",
-                                                    textAlign: "start",
-                                                }}
-                                            >
-                                                {error?.warehouseRequired}
-                                            </span>
-                                        )} */}
                             </Col>
                         </Row>
                     </div>
-                    {licence.warehouseRequired && (
-                        <>
-                            <div className='mb-3 d-flex justify-content-between align-items-center'>
-                                <h2 className='m-0'>Licences</h2>
-                                <button className={`add_btn me-3 ${isView ? 'd-none' : 'd-block'}`} onClick={() => { setEditModal(true); setMode("Add") }}> <img src='../../assets/img/about/plus.png' className='me-2' />Add</button>
-                            </div>
-                            <MaterialTable
-                                title=""
-                                columns={[
-                                    { title: 'Type', field: 'type' },
-                                    { title: 'Number', field: 'number' },
-                                    { title: 'Authority', field: 'authority' },
-                                    { title: 'Country', field: 'country' },
-                                    { title: 'Date Of Rating', field: 'dateofrating' },
-                                    { title: 'Expiry Date', field: 'expirydate' },
-                                ]}
-                                data={licenceTable}
-                                actions={isView ? [{
+                    <div className={licence.warehouseRequired === 'Yes' ? '' : 'd-none'}>
+                        <div className='mb-3 d-flex justify-content-between align-items-center'>
+                            <h2 className='m-0'>Licences</h2>
+                            <button className={`add_btn me-3 ${isView ? 'd-none' : 'd-block'}`} onClick={() => { setEditModal(true); setMode("Add") }}> <img src='../../assets/img/about/plus.png' className='me-2' />Add</button>
+                        </div>
+                        <MaterialTable
+                            title=""
+                            columns={[
+                                { title: 'Type', field: 'type' },
+                                { title: 'Number', field: 'number' },
+                                { title: 'Authority', field: 'authority' },
+                                { title: 'Country', field: 'country' },
+                                { title: 'Date Of Rating', field: 'dateofrating' },
+                                { title: 'Expiry Date', field: 'expirydate' },
+                            ]}
+                            data={licenceTable}
+                            actions={isView ? [{
+                                icon: 'preview',
+                                tooltip: 'View Licences',
+                                onClick: (e, data) => { setEditModal(true); setEditData(data.tableData.id); setMode("View") }
+                            },] : [
+                                {
+                                    icon: 'edit',
+                                    tooltip: 'Edit Licences',
+                                    onClick: (e, data) => { setEditModal(true); setEditData(data.tableData.id); setMode("Edit") }
+                                },
+                                {
                                     icon: 'preview',
                                     tooltip: 'View Licences',
                                     onClick: (e, data) => { setEditModal(true); setEditData(data.tableData.id); setMode("View") }
-                                },] : [
-                                    {
-                                        icon: 'edit',
-                                        tooltip: 'Edit Licences',
-                                        onClick: (e, data) => { setEditModal(true); setEditData(data.tableData.id); setMode("Edit") }
-                                    },
-                                    {
-                                        icon: 'preview',
-                                        tooltip: 'View Licences',
-                                        onClick: (e, data) => { setEditModal(true); setEditData(data.tableData.id); setMode("View") }
-                                    },
-                                    {
-                                        icon: 'delete',
-                                        tooltip: 'Delete Licences',
-                                        onClick: (e, data) => { Delete(data) }
-                                    }
-                                ]}
-                                options={{
-                                    filtering: true,
-                                    actionsColumnIndex: -1,
-                                    sorting: true,
-                                    pageSize: 10,
-                                    search: false,
-                                }}
-                            />
-                        </>
-                    )}
-
+                                },
+                                {
+                                    icon: 'delete',
+                                    tooltip: 'Delete Licences',
+                                    onClick: (e, data) => { Delete(data) }
+                                }
+                            ]}
+                            options={{
+                                filtering: true,
+                                actionsColumnIndex: -1,
+                                sorting: true,
+                                pageSize: 10,
+                                search: false,
+                            }}
+                        />
+                    </div>
                 </div>
                 <div className='footer_'>
                     <button onClick={() => { hendelCancel() }} className="footer_cancel_btn">cancel</button>
-                    <button onClick={() => { companyData?.licenses?.length > 0 && hendelNext() }} className='footer_next_btn'> Next</button>
+                    <button onClick={() => { licence.warehouseRequired === 'Yes' ? companyData?.licenses?.length > 0 && hendelNext() : licence.warehouseRequired === 'No' && hendelNext() }} className='footer_next_btn'> Next</button>
                 </div>
             </div>
             {

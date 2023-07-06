@@ -93,7 +93,7 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
                 console.log(ele);
                 return {
                     name: { label: (ele.name?.details?.name != null ? ele.name?.details?.name:ele.name?.details?.givenName) , value: ele.name?._id },
-                    type: { label: ele.type.roleName, value: ele.type._id }
+                    type: { label: ele.type?.roleName, value: ele.type?._id }
                 }
             }))
             setApiFetched(true)
@@ -259,7 +259,7 @@ const KeyParties = ({ hendelCancel, hendelNext, transactionType, getCounterParty
         if (names) {
             names.forEach(element => { 
                 element.roles.forEach(roleDetail => {
-                    if (roleDetail.roleId.roleName == "Buyer") {
+                    if (roleDetail.roleId?.roleName == "Buyer") {
                         var temp = {
                             label: element.details.name != null ? element.details.name:element.details.givenName,
                             value: element.details.name != null ?element.details.name:element.details.givenName,

@@ -129,7 +129,7 @@ const Add_Edit_Entities = () => {
             const roleData = entityGetById.data.roles.map((ele) => {
                 return {
                     _id: ele._id,
-                    roles: ele.roleId._id,
+                    roles: ele.roleId?._id,
                     justification: ele.justification
                 }
             })

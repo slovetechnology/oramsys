@@ -5,6 +5,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { companydataAction } from '../../../../redux/actions/companydataAction';
 import { ratingAgenciesAction } from '../../../../redux/actions/ratingAgenciesAction';
 import { useLocation } from 'react-router-dom';
+import { TextField } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete/Autocomplete';
+import { Col, Row } from 'react-bootstrap';
 
 const Ratings = ({ hendelNext, hendelCancel }) => {
 
@@ -15,6 +18,9 @@ const Ratings = ({ hendelNext, hendelCancel }) => {
     const [editData, setEditData] = useState('')
     const location = useLocation()
     const isView = location.state[1]?.isView
+    const [rate, setRate] = useState({
+        rateRequired: 'No'
+    })
 
     const companyData = useSelector((state) => state.companydata.companydata)
     const agencyData = useSelector((state) => state.ratingAgenciesData.ratingAgencies)
@@ -24,7 +30,8 @@ const Ratings = ({ hendelNext, hendelCancel }) => {
     }, [ratingAgenciesAction])
 
     useEffect(() => {
-        if (companyData && companyData.ratings && agencyData?.data) {
+        console.log(companyData, 'getting rate out')
+        if (companyData && companyData.ratings.length > 0 && agencyData?.data) {
             setRating(companyData.ratings.map((ele) => {
                 return {
                     agency: agencyData.data.find((item) => item._id === ele.agency)?.name,
@@ -44,10 +51,51 @@ const Ratings = ({ hendelNext, hendelCancel }) => {
         dispatch(companydataAction(body))
     }
 
+    let ratingRequiredOptions = [
+        { value: false, label: "No" },
+        { value: true, label: "Yes" },
+    ]
+
     return (
         <>
-            <div className='add-edit-product'>
-                <div className='product'>
+            <div className='ms-5'>
+                <Row className='mt-4'>
+                    <Col lg={6}>
+                        <Autocomplete
+                            label='Rating required?'
+                            id='disable-clearable'
+                            onChange={(e, newVal) => {
+                                console.log(newVal, 'on booking')
+                                setRate({
+                                    ...rate,
+                                    rateRequired: newVal.label,
+                                })
+                            }
+                            }
+                            getOptionLabel={(option) => option.label || ""}
+                            options={ratingRequiredOptions}
+                            disableClearable
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label='Rate Required?'
+                                    variant='standard'
+                                />
+                            )}
+                            disabled={isView}
+                            value={
+                                ((ratingRequiredOptions.length > 0 &&
+                                    rate.rateRequired === 'Yes') || rate.rateRequired === 'No') ?
+                                    ratingRequiredOptions.find(
+                                        (ele) => ele.label === rate.rateRequired
+                                    ) : rate.rateRequired = ''
+                            }
+                        />
+                    </Col>
+                </Row>
+            </div>
+            <div className={`add-edit-product`}>
+                <div className={`product ${rate.rateRequired === 'Yes' ? '' : 'd-none'}`}>
                     <div className='mb-3 d-flex justify-content-between align-items-center'>
                         <h2 className='m-0'>Ratings</h2>
                         <button className={`add_btn me-3 ${isView ? 'd-none' : 'd-block'}`} onClick={() => { setEditModal(true); setMode("Add") }}> <img src='../../assets/img/about/plus.png' className='me-2' />Add</button>
@@ -95,7 +143,7 @@ const Ratings = ({ hendelNext, hendelCancel }) => {
                 </div>
                 <div className='footer_'>
                     <button onClick={() => { hendelCancel() }} className="footer_cancel_btn">cancel</button>
-                    <button onClick={() => { companyData?.ratings?.length > 0 && hendelNext() }} className='footer_next_btn'> Next</button>
+                    <button onClick={() => { rate.rateRequired === 'Yes' ? companyData?.ratings?.length > 0 && hendelNext() : rate.rateRequired === 'No' && hendelNext() }} className='footer_next_btn'> Next</button>
                 </div>
             </div>
             {
